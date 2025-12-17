@@ -126,6 +126,7 @@ const normalizeSong = (
     item: z.infer<typeof ndType._response.playlistSong> | z.infer<typeof ndType._response.song>,
     server?: null | ServerListItem,
     imageSize?: number,
+    albumUpdatedAt?: string,
 ): Song => {
     let id;
     let playlistItemId;
@@ -138,12 +139,19 @@ const normalizeSong = (
         id = item.id;
     }
 
+    let updatedCheck = albumUpdatedAt || item.albumId;
+    let coverArtId = item.albumId;
+    if (item.albumArtist === 'Various Artists' && item.album.startsWith('Spotify:')) {
+        updatedCheck = item.updatedAt;
+        coverArtId = item.id;
+    }
+
     const imageUrl = getCoverArtUrl({
         baseUrl: server?.url,
-        coverArtId: id,
+        coverArtId: coverArtId,
         credential: server?.credential,
         size: imageSize || 100,
-        updated: item.updatedAt,
+        updated: updatedCheck,
     });
 
     const imagePlaceholderUrl = null;
@@ -278,6 +286,15 @@ const normalizeAlbum = (
 
     const imageBackdropUrl = imageUrl?.replace(/size=\d+/, 'size=1000') || null;
 
+    let albumUpdatedAt = item.updatedAt;
+    if (item.songs && item.songs.length > 0) {
+        const latestSong = item.songs.reduce((latest, song) =>
+            new Date(song.updatedAt) > new Date(latest.updatedAt) ? song : latest,
+        );
+        if (new Date(latestSong.updatedAt) > new Date(albumUpdatedAt)) {
+            albumUpdatedAt = latestSong.updatedAt;
+        }
+    }
     return {
         ...parseAlbumTags(item),
         ...getArtists(item),
@@ -318,7 +335,9 @@ const normalizeAlbum = (
         releaseYear: item.minYear || null,
         size: item.size,
         songCount: item.songCount,
-        songs: item.songs ? item.songs.map((song) => normalizeSong(song, server)) : undefined,
+        songs: item.songs
+            ? item.songs.map((song) => normalizeSong(song, server, imageSize, albumUpdatedAt))
+            : undefined,
         tags: item.tags || null,
         updatedAt: item.updatedAt,
         userFavorite: item.starred || false,
