@@ -125,16 +125,18 @@ export const Sidebar = () => {
                             </Text>
                         </Accordion.Control>
                         <Accordion.Panel>
-                            {libraryItemsWithRoute.map((item) => {
-                                return (
-                                    <SidebarItem key={`sidebar-${item.route}`} to={item.route}>
-                                        <Group gap="md">
-                                            <SidebarIcon route={item.route} />
-                                            {item.label}
-                                        </Group>
-                                    </SidebarItem>
-                                );
-                            })}
+                            {libraryItemsWithRoute
+                                .filter((item) => item.label !== 'Playlists')
+                                .map((item) => {
+                                    return (
+                                        <SidebarItem key={`sidebar-${item.route}`} to={item.route}>
+                                            <Group gap="md">
+                                                <SidebarIcon route={item.route} />
+                                                {item.label}
+                                            </Group>
+                                        </SidebarItem>
+                                    );
+                                })}
                         </Accordion.Panel>
                     </Accordion.Item>
                     <SidebarCollectionList />
@@ -146,12 +148,12 @@ export const Sidebar = () => {
                     )}
                 </Accordion>
             </ScrollArea>
-            <AnimatePresence initial={false} mode="popLayout">
-                <motion.div className={styles.serverSelectorWrapper} key="server-selector" layout>
-                    <ServerSelector />
-                </motion.div>
-                {showImage && <SidebarImage />}
-            </AnimatePresence>
+            {/*<AnimatePresence initial={false} mode="popLayout">*/}
+            {/*    <motion.div className={styles.serverSelectorWrapper} key="server-selector" layout>*/}
+            {/*        <ServerSelector />*/}
+            {/*    </motion.div>*/}
+            {/*    {showImage && <SidebarImage />}*/}
+            {/*</AnimatePresence>*/}
         </div>
     );
 };
