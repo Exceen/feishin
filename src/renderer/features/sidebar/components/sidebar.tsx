@@ -135,12 +135,12 @@ export const Sidebar = () => {
                     )}
                 </Accordion>
             </ScrollArea>
-            <AnimatePresence initial={false} mode="popLayout">
-                <motion.div className={styles.serverSelectorWrapper} key="server-selector" layout>
-                    <ServerSelector />
-                </motion.div>
-                {showImage && <SidebarImage />}
-            </AnimatePresence>
+            {/*<AnimatePresence initial={false} mode="popLayout">*/}
+            {/*    <motion.div className={styles.serverSelectorWrapper} key="server-selector" layout>*/}
+            {/*        <ServerSelector />*/}
+            {/*    </motion.div>*/}
+            {/*    {showImage && <SidebarImage />}*/}
+            {/*</AnimatePresence>*/}
         </div>
     );
 };
