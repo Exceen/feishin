@@ -258,28 +258,28 @@ function getCardsToShow(breakpoints: {
     isLargerThanXl: boolean;
 }) {
     if (breakpoints.isLargerThan3xl) {
-        return 8;
+        return 11;
     }
 
     if (breakpoints.isLargerThan2xl) {
-        return 7;
+        return 10;
     }
 
     if (breakpoints.isLargerThanXl) {
-        return 6;
+        return 8;
     }
 
     if (breakpoints.isLargerThanLg) {
-        return 5;
+        return 7;
     }
 
     if (breakpoints.isLargerThanMd) {
-        return 4;
+        return 6;
     }
 
     if (breakpoints.isLargerThanSm) {
-        return 3;
+        return 4;
     }
 
-    return 2;
+    return 3;
 }
