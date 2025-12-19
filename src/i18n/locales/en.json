@@ -575,7 +575,7 @@
             "genres": "$t(entity.genre_other)",
             "home": "$t(common.home)",
             "radio": "$t(entity.radioStation_other)",
-            "myLibrary": "my library",
+            "myLibrary": "library",
             "nowPlaying": "now playing",
             "playlists": "$t(entity.playlist_other)",
             "search": "$t(common.search)",
