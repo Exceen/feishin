@@ -115,16 +115,18 @@ export const Sidebar = () => {
                             </Text>
                         </Accordion.Control>
                         <Accordion.Panel>
-                            {sidebarItemsWithRoute.map((item) => {
-                                return (
-                                    <SidebarItem key={`sidebar-${item.route}`} to={item.route}>
-                                        <Group gap="md">
-                                            <SidebarIcon route={item.route} />
-                                            {item.label}
-                                        </Group>
-                                    </SidebarItem>
-                                );
-                            })}
+                            {sidebarItemsWithRoute
+                                .filter((item) => item.label !== 'Playlists')
+                                .map((item) => {
+                                    return (
+                                        <SidebarItem key={`sidebar-${item.route}`} to={item.route}>
+                                            <Group gap="md">
+                                                <SidebarIcon route={item.route} />
+                                                {item.label}
+                                            </Group>
+                                        </SidebarItem>
+                                    );
+                                })}
                         </Accordion.Panel>
                     </Accordion.Item>
                     {sidebarPlaylistList && (
