@@ -2,6 +2,9 @@
 FROM node:23-alpine AS builder
 WORKDIR /app
 
+# Install build dependencies for native modules
+RUN apk add --no-cache python3 make g++
+
 # Copy package.json first to cache node_modules
 COPY package.json pnpm-lock.yaml pnpm-workspace.yaml .
 
