@@ -43,6 +43,10 @@ const updatePassword = (password: string) => {
     ipcRenderer.send('remote-password', password);
 };
 
+const updateIgnoreAuthForHostEndsWith = (ignoreAuthForHostEndsWith: string) => {
+    ipcRenderer.send('remote-ignore-auth-for-host-ends-with', ignoreAuthForHostEndsWith);
+};
+
 const updatePlayback = (playback: PlayerStatus) => {
     ipcRenderer.send('update-playback', playback);
 };
@@ -52,8 +56,16 @@ const updateSetting = (
     port: number,
     username: string,
     password: string,
+    ignoreAuthForHostEndsWith: string,
 ): Promise<null | string> => {
-    return ipcRenderer.invoke('remote-settings', enabled, port, username, password);
+    return ipcRenderer.invoke(
+        'remote-settings',
+        enabled,
+        port,
+        username,
+        password,
+        ignoreAuthForHostEndsWith,
+    );
 };
 
 const updateRating = (rating: number, serverId: string, ids: string[]) => {
@@ -93,6 +105,7 @@ export const remote = {
     setRemoteEnabled,
     setRemotePort,
     updateFavorite,
+    updateIgnoreAuthForHostEndsWith,
     updatePassword,
     updatePlayback,
     updatePosition,
