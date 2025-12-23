@@ -1032,6 +1032,8 @@
         "preventSuspendOnPlayback": "Prevent suspend on playback",
         "remotePassword_description": "Sets the password for the remote control server. These credentials are by default transferred insecurely, so you should use a unique password that you do not care about",
         "remotePassword": "Remote control server password",
+        "remoteIgnoreAuthForHostEndsWith_description": "sets host suffixes for which authentication will be ignored. useful for local networks where security is not a concern",
+        "remoteIgnoreAuthForHostEndsWith": "host suffixes to ignore authentication (e.g. .local, .lan)",
         "remotePort_description": "Sets the port for the remote control server",
         "remotePort": "Remote control server port",
         "remoteUsername_description": "Sets the username for the remote control server. If both username and password are empty, authentication will be disabled",
