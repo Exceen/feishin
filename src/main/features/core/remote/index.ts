@@ -35,6 +35,7 @@ interface MimeType {
 
 interface RemoteConfig {
     enabled: boolean;
+    ignoreAuthForHostEndsWith: string;
     password: string;
     port: number;
     username: string;
@@ -50,6 +51,7 @@ let wsServer: undefined | WsServer<typeof StatefulWebSocket>;
 
 const settings: RemoteConfig = {
     enabled: false,
+    ignoreAuthForHostEndsWith: '',
     password: '',
     port: 4333,
     username: '',
@@ -125,6 +127,16 @@ const getEncoding = (encoding: string | string[]): Encoding => {
 };
 
 const cache = new Map<string, Map<Encoding, [number, Buffer]>>();
+
+function authCanBeIgnored(req: IncomingMessage, config: RemoteConfig): boolean {
+    return (
+        !!config.ignoreAuthForHostEndsWith &&
+        config.ignoreAuthForHostEndsWith.trim().length > 0 &&
+        !!req.headers['host'] &&
+        req.headers['host'].length > 0 &&
+        req.headers['host'].split(':')[0].endsWith(config.ignoreAuthForHostEndsWith)
+    );
+}
 
 function authorize(req: IncomingMessage): boolean {
     if (settings.username || settings.password) {
@@ -278,7 +290,7 @@ const enableServer = (config: RemoteConfig): Promise<void> => {
             }
 
             server = createServer({}, async (req, res) => {
-                if (!authorize(req)) {
+                if (!authCanBeIgnored(req, config) && !authorize(req)) {
                     res.statusCode = 401;
                     res.setHeader('WWW-Authenticate', 'Basic realm="401"');
                     res.end('Authorization required');
@@ -335,11 +347,13 @@ const enableServer = (config: RemoteConfig): Promise<void> => {
             server.listen(config.port, resolve);
             wsServer = new WebSocketServer<typeof StatefulWebSocket>({ server });
 
-            wsServer!.on('connection', (ws: StatefulWebSocket) => {
+            wsServer!.on('connection', (ws: StatefulWebSocket, req: IncomingMessage) => {
                 let authFail: number | undefined;
                 ws.alive = true;
 
                 if (!settings.username && !settings.password) {
+                    ws.auth = true;
+                } else if (authCanBeIgnored(req, config)) {
                     ws.auth = true;
                 } else {
                     authFail = setTimeout(() => {
@@ -550,13 +564,25 @@ ipcMain.on('remote-password', (_event, password: string) => {
     wsServer?.clients.forEach((client) => client.close(4002));
 });
 
+ipcMain.on('remote-ignore-auth-for-host-ends-with', (_event, ignoreAuthForHostEndsWith: string) => {
+    settings.ignoreAuthForHostEndsWith = ignoreAuthForHostEndsWith;
+});
+
 ipcMain.handle(
     'remote-settings',
-    async (_event, enabled: boolean, port: number, username: string, password: string) => {
+    async (
+        _event,
+        enabled: boolean,
+        port: number,
+        username: string,
+        password: string,
+        ignoreAuthForHostEndsWith: string,
+    ) => {
         settings.enabled = enabled;
         settings.password = password;
         settings.port = port;
         settings.username = username;
+        settings.ignoreAuthForHostEndsWith = ignoreAuthForHostEndsWith;
 
         if (enabled) {
             try {
