@@ -369,6 +369,7 @@ const PlaybackSettingsSchema = z.object({
 
 const RemoteSettingsSchema = z.object({
     enabled: z.boolean(),
+    ignoreAuthForHostEndsWith: z.string(),
     password: z.string(),
     port: z.number(),
     username: z.string(),
@@ -1262,6 +1263,7 @@ const initialState: SettingsState = {
     },
     remote: {
         enabled: false,
+        ignoreAuthForHostEndsWith: '',
         password: randomString(8),
         port: 4333,
         username: 'feishin',
