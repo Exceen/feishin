@@ -2,8 +2,14 @@
 FROM node:23-alpine AS builder
 WORKDIR /app
 
+# Install build dependencies for native modules
+RUN apk add --no-cache python3 make g++
+
+# Enable pnpm via Corepack (version is pinned in package.json's packageManager field)
+RUN corepack enable
+
 # Copy package.json first to cache node_modules
-COPY package.json pnpm-lock.yaml pnpm-workspace.yaml .
+COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
 
 RUN pnpm install
 
