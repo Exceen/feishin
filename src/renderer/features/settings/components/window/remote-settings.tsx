@@ -150,6 +150,31 @@ export const RemoteSettings = memo(() => {
             isHidden,
             title: t('setting.remotePassword', { postProcess: 'sentenceCase' }),
         },
+        {
+            control: (
+                <TextInput
+                    defaultValue={settings.ignoreAuthForHostEndsWith}
+                    onBlur={(e) => {
+                        const ignoreAuthForHostEndsWith = e.currentTarget.value;
+                        if (ignoreAuthForHostEndsWith === settings.ignoreAuthForHostEndsWith)
+                            return;
+                        remote!.updateIgnoreAuthForHostEndsWith(ignoreAuthForHostEndsWith);
+                        setSettings({
+                            remote: {
+                                ...settings,
+                                ignoreAuthForHostEndsWith,
+                            },
+                        });
+                    }}
+                />
+            ),
+            description: t('setting.remoteIgnoreAuthForHostEndsWith', {
+                context: 'description',
+                postProcess: 'sentenceCase',
+            }),
+            isHidden,
+            title: t('setting.remoteIgnoreAuthForHostEndsWith', { postProcess: 'sentenceCase' }),
+        },
     ];
 
     return (
