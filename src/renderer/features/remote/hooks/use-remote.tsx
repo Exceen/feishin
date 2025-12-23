@@ -42,6 +42,7 @@ export const useRemote = () => {
                 remoteSettings.port,
                 remoteSettings.username,
                 remoteSettings.password,
+                remoteSettings.ignoreAuthForHostEndsWith,
             )
             .catch((error) => {
                 logger.error('Failed to enable remote', { error });
