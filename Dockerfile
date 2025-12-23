@@ -2,8 +2,11 @@
 FROM node:23-alpine AS builder
 WORKDIR /app
 
+# Install build dependencies for native modules
+RUN apk add --no-cache python3 make g++
+
 # Copy package.json first to cache node_modules
-COPY package.json pnpm-lock.yaml .
+COPY package.json pnpm-lock.yaml ./
 
 # Match CI (pnpm/action-setup version: 10). Latest pnpm 11 fails install without approve-builds.
 RUN corepack enable && corepack prepare pnpm@10 --activate
