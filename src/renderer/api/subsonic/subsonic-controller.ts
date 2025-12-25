@@ -682,6 +682,28 @@ export const SubsonicController: InternalControllerEndpoint = {
             ...args,
             query: { ...args.query, startIndex: 0 },
         }).then((res) => res!.totalRecordCount!),
+    getArtistRadio: async (args) => {
+        const { apiClientProps, query } = args;
+
+        const res = await ssApiClient(apiClientProps).getSimilarSongs2({
+            query: {
+                count: query.count,
+                id: query.artistId,
+            },
+        });
+
+        if (res.status !== 200) {
+            throw new Error('Failed to get artist radio songs');
+        }
+
+        if (!res.body.similarSongs2?.song) {
+            return [];
+        }
+
+        return res.body.similarSongs2.song.map((song) =>
+            ssNormalize.song(song, apiClientProps.server),
+        );
+    },
     getDownloadUrl: (args) => {
         const { apiClientProps, query } = args;
 
@@ -827,6 +849,28 @@ export const SubsonicController: InternalControllerEndpoint = {
             startIndex: query.startIndex,
         });
     },
+    getImageUrl: ({ apiClientProps: { server }, query }) => {
+        const { id, size } = query;
+        const imageSize = size;
+
+        if (!server?.url || !server?.credential) {
+            return null;
+        }
+
+        // Check for default placeholder image ID
+        if (id.match('2a96cbd8b46e442fc41c2b86b821562f')) {
+            return null;
+        }
+
+        return (
+            `${server.url}/rest/getCoverArt.view` +
+            `?id=${id}` +
+            `&${server.credential}` +
+            '&v=1.13.0' +
+            '&c=Feishin' +
+            (imageSize ? `&size=${imageSize}` : '')
+        );
+    },
     getInternetRadioStations: async (args) => {
         const { apiClientProps } = args;
 
@@ -858,6 +902,7 @@ export const SubsonicController: InternalControllerEndpoint = {
             totalRecordCount: res.body.musicFolders.musicFolder.length,
         };
     },
+
     getPlaylistDetail: async (args) => {
         const { apiClientProps, query } = args;
 
@@ -873,7 +918,6 @@ export const SubsonicController: InternalControllerEndpoint = {
 
         return ssNormalize.playlist(res.body.playlist, apiClientProps.server);
     },
-
     getPlaylistList: async ({ apiClientProps, query }) => {
         const sortOrder = query.sortOrder.toLowerCase() as 'asc' | 'desc';
 
