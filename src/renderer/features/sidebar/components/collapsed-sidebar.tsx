@@ -120,27 +120,27 @@ export const CollapsedSidebar = () => {
                     />
                 ))}
             </ScrollArea>
-            {currentServer && (
-                <DropdownMenu offset={0} position="right-end" width={240}>
-                    <DropdownMenu.Target>
-                        <div className={styles.serverSelectorContainer}>
-                            <img
-                                className={styles.serverIcon}
-                                src={
-                                    currentServer.type === ServerType.NAVIDROME
-                                        ? NavidromeLogo
-                                        : currentServer.type === ServerType.JELLYFIN
-                                          ? JellyfinLogo
-                                          : OpenSubsonicLogo
-                                }
-                            />
-                        </div>
-                    </DropdownMenu.Target>
-                    <DropdownMenu.Dropdown>
-                        <ServerSelectorItems />
-                    </DropdownMenu.Dropdown>
-                </DropdownMenu>
-            )}
+            {/*{currentServer && (*/}
+            {/*    <DropdownMenu offset={0} position="right-end" width={240}>*/}
+            {/*        <DropdownMenu.Target>*/}
+            {/*            <div className={styles.serverSelectorContainer}>*/}
+            {/*                <img*/}
+            {/*                    className={styles.serverIcon}*/}
+            {/*                    src={*/}
+            {/*                        currentServer.type === ServerType.NAVIDROME*/}
+            {/*                            ? NavidromeLogo*/}
+            {/*                            : currentServer.type === ServerType.JELLYFIN*/}
+            {/*                              ? JellyfinLogo*/}
+            {/*                              : OpenSubsonicLogo*/}
+            {/*                    }*/}
+            {/*                />*/}
+            {/*            </div>*/}
+            {/*        </DropdownMenu.Target>*/}
+            {/*        <DropdownMenu.Dropdown>*/}
+            {/*            <ServerSelectorItems />*/}
+            {/*        </DropdownMenu.Dropdown>*/}
+            {/*    </DropdownMenu>*/}
+            {/*)}*/}
         </motion.div>
     );
 };
