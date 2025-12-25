@@ -298,7 +298,7 @@ const CompactItemCard = ({
                     className={clsx(styles.image, {
                         [styles.isRound]: isRound,
                     })}
-                    id={data?.id}
+                    id={data?.imageId || data?.id}
                     itemType={itemType}
                     src={(data as Album | AlbumArtist | Playlist | Song)?.imageUrl}
                 />
@@ -514,7 +514,7 @@ const DefaultItemCard = ({
             <>
                 <ItemImage
                     className={clsx(styles.image, { [styles.isRound]: isRound })}
-                    id={data?.id}
+                    id={data?.imageId || data?.id}
                     itemType={itemType}
                     src={(data as Album | AlbumArtist | Playlist | Song)?.imageUrl}
                 />
@@ -774,7 +774,7 @@ const PosterItemCard = ({
             <>
                 <ItemImage
                     className={clsx(styles.image, { [styles.isRound]: isRound })}
-                    id={data?.id}
+                    id={data?.imageId || data?.id}
                     itemType={itemType}
                     src={(data as Album | AlbumArtist | Playlist | Song)?.imageUrl}
                 />
