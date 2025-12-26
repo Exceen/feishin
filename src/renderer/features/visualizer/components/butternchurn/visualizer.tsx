@@ -179,11 +179,18 @@ const VisualizerInner = () => {
         const allPresetNames = Object.keys(presets);
 
         // Get the list of presets to cycle through
-        const presetList = butterchurnSettings.includeAllPresets
+        let presetList = butterchurnSettings.includeAllPresets
             ? allPresetNames
             : butterchurnSettings.selectedPresets.length > 0
               ? butterchurnSettings.selectedPresets.filter((name) => presets[name])
               : allPresetNames;
+
+        // Filter out ignored presets
+        if (butterchurnSettings.ignoredPresets && butterchurnSettings.ignoredPresets.length > 0) {
+            presetList = presetList.filter(
+                (name) => !butterchurnSettings.ignoredPresets.includes(name),
+            );
+        }
 
         if (presetList.length === 0) return;
 
@@ -287,16 +294,6 @@ const VisualizerInner = () => {
 
     return (
         <div className={styles.container} ref={containerRef}>
-            <ActionIcon
-                className={styles.settingsIcon}
-                icon="settings2"
-                iconProps={{ size: 'lg' }}
-                onClick={openVisualizerSettingsModal}
-                pos="absolute"
-                right={0}
-                top={0}
-                variant="transparent"
-            />
             <canvas className={styles.canvas} ref={canvasRef} />
             {butterchurnSettings.currentPreset && (
                 <Text className={styles['preset-overlay']} isNoSelect size="sm">
@@ -309,8 +306,20 @@ const VisualizerInner = () => {
 
 export const Visualizer = () => {
     return (
-        <ComponentErrorBoundary>
-            <VisualizerInner />
-        </ComponentErrorBoundary>
+        <div className={styles.container}>
+            <ActionIcon
+                className={styles.settingsIcon}
+                icon="settings2"
+                iconProps={{ size: 'lg' }}
+                onClick={openVisualizerSettingsModal}
+                pos="absolute"
+                right="var(--theme-spacing-sm)"
+                top="var(--theme-spacing-sm)"
+                variant="subtle"
+            />
+            <ComponentErrorBoundary>
+                <VisualizerInner />
+            </ComponentErrorBoundary>
+        </div>
     );
 };

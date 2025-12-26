@@ -217,6 +217,10 @@ const VisualizerInner = () => {
         }
     }, [motion, options]);
 
+    return <div className={styles.visualizer} ref={canvasRef} />;
+};
+
+export const Visualizer = () => {
     return (
         <div className={styles.container}>
             <ActionIcon
@@ -225,19 +229,13 @@ const VisualizerInner = () => {
                 iconProps={{ size: 'lg' }}
                 onClick={openVisualizerSettingsModal}
                 pos="absolute"
-                right={0}
-                top={0}
-                variant="transparent"
+                right="var(--theme-spacing-sm)"
+                top="var(--theme-spacing-sm)"
+                variant="subtle"
             />
-            <div className={styles.visualizer} ref={canvasRef} />
+            <ComponentErrorBoundary>
+                <VisualizerInner />
+            </ComponentErrorBoundary>
         </div>
-    );
-};
-
-export const Visualizer = () => {
-    return (
-        <ComponentErrorBoundary>
-            <VisualizerInner />
-        </ComponentErrorBoundary>
     );
 };
