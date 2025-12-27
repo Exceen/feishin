@@ -80,7 +80,7 @@ const AlbumDetailRoute = () => {
                             </LibraryHeaderBar.Title>
                         </LibraryHeaderBar>
                     ),
-                    offset: 200,
+                    offset: 120,
                     target: headerRef,
                 }}
                 ref={scrollAreaRef}
