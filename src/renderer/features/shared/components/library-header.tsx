@@ -157,29 +157,29 @@ export const LibraryHeader = forwardRef(
 
 const calculateTitleSize = (title: string) => {
     const titleLength = title.length;
-    let baseSize = '3dvw';
+    let baseSize = '2dvw';
 
     if (titleLength > 20) {
-        baseSize = '2.5dvw';
-    }
-
-    if (titleLength > 30) {
-        baseSize = '2.25dvw';
-    }
-
-    if (titleLength > 40) {
-        baseSize = '2dvw';
-    }
-
-    if (titleLength > 50) {
-        baseSize = '1.875dvw';
-    }
-
-    if (titleLength > 60) {
         baseSize = '1.75dvw';
     }
 
-    return `clamp(1.75rem, ${baseSize}, 2.75rem)`;
+    if (titleLength > 30) {
+        baseSize = '1.5dvw';
+    }
+
+    if (titleLength > 40) {
+        baseSize = '1.375dvw';
+    }
+
+    if (titleLength > 50) {
+        baseSize = '1.25dvw';
+    }
+
+    if (titleLength > 60) {
+        baseSize = '1.125dvw';
+    }
+
+    return `clamp(1.25rem, ${baseSize}, 1.75rem)`;
 };
 
 interface LibraryHeaderMenuProps {
