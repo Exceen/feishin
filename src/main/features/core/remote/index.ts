@@ -650,12 +650,16 @@ ipcMain.on('update-playback', (_event, status: PlayerStatus) => {
     broadcast({ data: status, event: 'playback' });
 });
 
-ipcMain.on('update-song', (_event, song: QueueSong | undefined) => {
+ipcMain.on('update-song', (_event, song: QueueSong | undefined, imageUrl?: null | string) => {
     const songChanged = song?.id !== currentState.song?.id;
-    currentState.song = song;
+
+    // Attach imageUrl to the song object before storing
+    const songWithImage = song ? { ...song, imageUrl: imageUrl ?? null } : undefined;
+    currentState.song = songWithImage;
 
     if (songChanged) {
-        broadcast({ data: song || null, event: 'song' });
+        // Broadcast song with imageUrl attached
+        broadcast({ data: songWithImage ?? null, event: 'song' });
     }
 });
 

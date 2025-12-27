@@ -1,11 +1,12 @@
 import isElectron from 'is-electron';
 import { useEffect, useRef } from 'react';
 
+import { useItemImageUrl } from '/@/renderer/components/item-image/item-image';
 import { usePlayerEvents } from '/@/renderer/features/player/audio-player/hooks/use-player-events';
 import { useCreateFavorite } from '/@/renderer/features/shared/mutations/create-favorite-mutation';
 import { useDeleteFavorite } from '/@/renderer/features/shared/mutations/delete-favorite-mutation';
 import { useSetRating } from '/@/renderer/features/shared/mutations/set-rating-mutation';
-import { usePlayerActions, usePlayerStore, useRemoteSettings } from '/@/renderer/store';
+import { usePlayerActions, usePlayerSong, usePlayerStore, useRemoteSettings } from '/@/renderer/store';
 import { useTimestampStoreBase } from '/@/renderer/store/timestamp.store';
 import { LogCategory, logFn } from '/@/renderer/utils/logger';
 import { logMsg } from '/@/renderer/utils/logger-message';
@@ -19,6 +20,7 @@ const ipc = isElectron() ? window.api.ipc : null;
 export const useRemote = () => {
     const { mediaSkipForward, setVolume } = usePlayerActions();
     const player = usePlayerStore();
+    const currentSong = usePlayerSong();
 
     const remoteSettings = useRemoteSettings();
     const updateRatingMutation = useSetRating({});
@@ -26,6 +28,13 @@ export const useRemote = () => {
     const removeFromFavoritesMutation = useDeleteFavorite({});
 
     const isRemoteEnabled = remoteSettings.enabled;
+
+    const imageUrl = useItemImageUrl({
+        id: currentSong?.imageId || undefined,
+        imageUrl: currentSong?.imageUrl,
+        itemType: LibraryItem.SONG,
+        type: 'itemCard',
+    });
 
     // Initialize the remote
     useEffect(() => {
@@ -80,7 +89,7 @@ export const useRemote = () => {
 
             const currentSong = player.getCurrentSong();
             if (currentSong) {
-                remote.updateSong(currentSong);
+                remote.updateSong(currentSong, imageUrl);
             }
 
             const currentPosition = useTimestampStoreBase.getState().timestamp;
@@ -177,8 +186,6 @@ export const useRemote = () => {
 
         isInitializedRef.current = true;
 
-        const currentSong = player.getCurrentSong();
-
         if (currentSong) {
             logFn.debug(logMsg[LogCategory.REMOTE].sendingInitialSong, {
                 category: LogCategory.REMOTE,
@@ -188,27 +195,34 @@ export const useRemote = () => {
                     name: currentSong.name,
                 },
             });
-            remote.updateSong(currentSong);
+            remote.updateSong(currentSong, imageUrl);
         }
-    }, [isRemoteEnabled, player]);
+    }, [isRemoteEnabled, currentSong, imageUrl]);
+
+    // Update remote when song or imageUrl changes
+    useEffect(() => {
+        if (!isRemoteEnabled || !remote) {
+            return;
+        }
+
+        if (currentSong) {
+            logFn.debug(logMsg[LogCategory.REMOTE].updateSongSent, {
+                category: LogCategory.REMOTE,
+                meta: {
+                    artistName: currentSong.artistName,
+                    id: currentSong.id,
+                    name: currentSong.name,
+                },
+            });
+        }
+
+        remote.updateSong(currentSong, imageUrl);
+    }, [currentSong, imageUrl, isRemoteEnabled]);
 
     usePlayerEvents(
         {
-            onCurrentSongChange: (properties) => {
-                if (!isRemoteEnabled || !remote) {
-                    return;
-                }
-
-                logFn.debug(logMsg[LogCategory.REMOTE].updateSongSent, {
-                    category: LogCategory.REMOTE,
-                    meta: {
-                        artistName: properties.song?.artistName,
-                        id: properties.song?.id,
-                        index: properties.index,
-                        name: properties.song?.name,
-                    },
-                });
-                remote.updateSong(properties.song);
+            onCurrentSongChange: () => {
+                // The effect above will handle the update when currentSong changes
             },
             onPlayerProgress: (properties) => {
                 if (!isRemoteEnabled || !remote) {
