@@ -243,26 +243,26 @@ export const calculateWeightedLength = (str: string): number => {
 
 export const calculateTitleSize = (title: string) => {
     const titleLength = calculateWeightedLength(title);
-    let baseSize = '3dvw';
+    let baseSize = '2dvw';
 
     if (titleLength > 20) {
-        baseSize = '2.5dvw';
+        baseSize = '1.75dvw';
     }
 
     if (titleLength > 30) {
-        baseSize = '2.25dvw';
+        baseSize = '1.5dvw';
     }
 
     if (titleLength > 40) {
-        baseSize = '2dvw';
+        baseSize = '1.375dvw';
     }
 
     if (titleLength > 50) {
-        baseSize = '1.875dvw';
+        baseSize = '1.25dvw';
     }
 
     if (titleLength > 60) {
-        baseSize = '1.75dvw';
+        baseSize = '1.125dvw';
     }
 
     if (titleLength > 70) {
@@ -277,7 +277,7 @@ export const calculateTitleSize = (title: string) => {
         baseSize = '1.3dvw';
     }
 
-    return `clamp(1.75rem, ${baseSize}, 2.75rem)`;
+    return `clamp(1.25rem, ${baseSize}, 1.75rem)`;
 };
 
 interface LibraryHeaderMenuProps {
