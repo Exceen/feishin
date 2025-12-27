@@ -150,7 +150,7 @@ export const AlbumArtistDetailHeader = forwardRef((_props, ref: Ref<HTMLDivEleme
             ref={ref}
             title={detailQuery.data?.name || ''}
         >
-            <Stack gap="md" w="100%">
+            <Stack gap="xs" w="100%">
                 <Group className={styles.metadataGroup}>
                     {metadataItems
                         .filter((i) => i.enabled)
