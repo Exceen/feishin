@@ -30,6 +30,10 @@ const requestVolume = (cb: (event: IpcRendererEvent, data: { volume: number }) =
     ipcRenderer.on('request-volume', cb);
 };
 
+const requestCurrentRemoteState = (cb: (event: IpcRendererEvent) => void) => {
+    ipcRenderer.on('request-current-remote-state', cb);
+};
+
 const setRemoteEnabled = (enabled: boolean): Promise<null | string> => {
     const result = ipcRenderer.invoke('remote-enable', enabled);
     return result;
@@ -102,6 +106,7 @@ const updatePosition = (timeSec: number) => {
 };
 
 export const remote = {
+    requestCurrentRemoteState,
     requestFavorite,
     requestPosition,
     requestRating,
