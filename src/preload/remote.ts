@@ -144,6 +144,10 @@ const requestVolume = (cb: (data: { volume: number }) => void) => {
     ipcRenderer.on('request-volume', (_, data) => cb(data));
 };
 
+const requestCurrentRemoteState = (cb: (event: IpcRendererEvent) => void) => {
+    ipcRenderer.on('request-current-remote-state', cb);
+};
+
 const setRemoteEnabled = (enabled: boolean): Promise<null | string> => {
     const result = ipcRenderer.invoke('remote-enable', enabled);
     return result;
@@ -219,6 +223,7 @@ export const remote = {
     requestAddToPlaylist,
     requestAlbums,
     requestClearQueue,
+    requestCurrentRemoteState,
     requestFavorite,
     requestPlayAlbum,
     requestPlaylists,

@@ -473,7 +473,11 @@ const enableServer = (config: RemoteConfig): Promise<void> => {
 
             server.listen(config.port, () => {
                 log.info('Remote server listening', { port: config.port });
-                settle(() => resolve());
+                settle(() => {
+                    // Request current player state from renderer after server starts
+                    getMainWindow()?.webContents.send('request-current-remote-state');
+                    resolve()
+                });
             });
             server.on('error', (error) => {
                 log.error('Remote server listen failed', { error, port: config.port });
