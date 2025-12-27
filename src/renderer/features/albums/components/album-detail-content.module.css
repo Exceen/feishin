@@ -14,8 +14,8 @@
 .content-layout {
     display: grid;
     grid-template-areas:
-        'metadata'
-        'songs';
+        'songs'
+        'metadata';
     grid-template-rows: auto auto;
     grid-template-columns: 1fr;
     gap: var(--theme-spacing-lg);
