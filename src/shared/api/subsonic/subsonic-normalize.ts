@@ -118,6 +118,14 @@ const normalizeSong = (
     item: z.infer<typeof ssType._response.song>,
     server?: null | ServerListItemWithCredential,
 ): Song => {
+    // For Spotify Various Artists albums, use the song's own ID for cover art to get individual covers
+    // Otherwise, use the album ID to share cover art across all songs
+    const albumArtistName = item.albumArtists?.[0]?.name || item.artist || '';
+    const imageId =
+        albumArtistName === 'Various Artists' && item.album?.startsWith('Spotify:')
+            ? item.id.toString()
+            : item.albumId?.toString() || item.coverArt?.toString() || null;
+
     return {
         _itemType: LibraryItem.SONG,
         _serverId: server?.id || 'unknown',
@@ -154,7 +162,7 @@ const normalizeSong = (
                 : null,
         genres: getGenres(item, server),
         id: item.id.toString(),
-        imageId: item.coverArt?.toString() || null,
+        imageId,
         imageUrl: null,
         lastPlayedAt: null,
         lyrics: null,
