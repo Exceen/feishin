@@ -344,7 +344,11 @@ const enableServer = (config: RemoteConfig): Promise<void> => {
                 }
             });
 
-            server.listen(config.port, resolve);
+            server.listen(config.port, () => {
+                // Request current player state from renderer after server starts
+                getMainWindow()?.webContents.send('request-current-remote-state');
+                resolve();
+            });
             wsServer = new WebSocketServer<typeof StatefulWebSocket>({ server });
 
             wsServer!.on('connection', (ws: StatefulWebSocket, req: IncomingMessage) => {
