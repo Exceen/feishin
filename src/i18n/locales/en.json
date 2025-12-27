@@ -1136,6 +1136,7 @@
         "fillAlpha": "Fill Alpha",
         "channelLayout": "Channel Layout",
         "maxFPS": "Max FPS",
+        "opacity": "Opacity",
         "customGradients": "Custom Gradients",
         "addCustomGradient": "Add Custom Gradient",
         "gradientName": "Gradient Name",

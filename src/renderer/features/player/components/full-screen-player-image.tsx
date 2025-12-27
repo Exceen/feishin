@@ -84,13 +84,13 @@ export const FullScreenPlayerImage = () => {
     const { nextSong } = usePlayerData();
 
     const currentImageUrl = useItemImageUrl({
-        id: currentSong?.imageId || currentSong?.id,
+        id: currentSong?.imageId || currentSong?.id || undefined,
         itemType: LibraryItem.SONG,
         type: 'fullScreenPlayer',
     });
 
     const nextImageUrl = useItemImageUrl({
-        id: nextSong?.imageId || nextSong?.id,
+        id: nextSong?.imageId || nextSong?.id || undefined,
         itemType: LibraryItem.SONG,
         type: 'fullScreenPlayer',
     });
