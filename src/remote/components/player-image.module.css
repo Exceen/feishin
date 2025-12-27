@@ -2,6 +2,6 @@
     width: 100%;
     height: 40vh;
     aspect-ratio: 1/1;
-    object-fit: var(--theme-image-fit);
+    object-fit: contain;
     border-radius: var(--theme-radius-md);
 }
