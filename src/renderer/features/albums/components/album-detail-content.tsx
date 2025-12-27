@@ -513,11 +513,6 @@ export const AlbumDetailContent = () => {
     return (
         <div className={styles.contentContainer}>
             <div className={styles.detailContainer}>
-                {comment && (
-                    <Spoiler maxHeight={75}>
-                        <Text pb="md">{replaceURLWithHTMLLinks(comment)}</Text>
-                    </Spoiler>
-                )}
                 <div className={styles.contentLayout}>
                     <div className={styles.songsColumn}>
                         {detailQuery?.data?.songs && detailQuery.data.songs.length > 0 && (
@@ -527,7 +522,11 @@ export const AlbumDetailContent = () => {
                     <div className={styles.metadataColumn}>
                         <AlbumMetadataGenres genres={detailQuery?.data?.genres} />
                         <AlbumMetadataTags album={detailQuery?.data} />
-                        <AlbumMetadataExternalLinks
+                        {comment && (
+                            <Spoiler maxHeight={75}>
+                                <Text pb="md">{replaceURLWithHTMLLinks(comment)}</Text>
+                            </Spoiler>
+                        )}<AlbumMetadataExternalLinks
                             albumArtist={detailQuery?.data?.albumArtistName}
                             albumName={detailQuery?.data?.name}
                             externalLinks={externalLinks}
