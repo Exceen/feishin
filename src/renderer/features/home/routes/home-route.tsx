@@ -102,7 +102,7 @@ const HomeRoute = () => {
                             </LibraryHeaderBar.Title>
                         </LibraryHeaderBar>
                     ),
-                    offset: 200,
+                    offset: 120,
                 }}
                 ref={scrollAreaRef}
             >
