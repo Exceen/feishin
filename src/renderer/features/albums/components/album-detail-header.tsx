@@ -228,7 +228,7 @@ export const AlbumDetailHeader = forwardRef<HTMLDivElement>((_props, ref) => {
                 }}
                 title={detailQuery?.data?.name || ''}
             >
-                <Stack gap="md" w="100%">
+                <Stack gap="xs" w="100%">
                     <Group className={styles.metadataGroup} gap="xs">
                         {metadataItems.map((item, index) => (
                             <Fragment key={item.id}>
