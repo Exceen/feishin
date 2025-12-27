@@ -5,6 +5,9 @@ out
 .eslintcache
 *.log*
 release
+.idea/
 .idea
+package-lock.json
+*.nosync/
 .scratch
 tsconfig.*.tsbuildinfo
