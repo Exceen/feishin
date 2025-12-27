@@ -6,6 +6,7 @@ import { useCreateFavorite } from '/@/renderer/features/shared/mutations/create-
 import { useDeleteFavorite } from '/@/renderer/features/shared/mutations/delete-favorite-mutation';
 import { useSetRating } from '/@/renderer/features/shared/mutations/set-rating-mutation';
 import { usePlayerActions, usePlayerStore, useRemoteSettings } from '/@/renderer/store';
+import { useTimestampStoreBase } from '/@/renderer/store/timestamp.store';
 import { LogCategory, logFn } from '/@/renderer/utils/logger';
 import { logMsg } from '/@/renderer/utils/logger-message';
 import { toast } from '/@/shared/components/toast/toast';
@@ -64,6 +65,29 @@ export const useRemote = () => {
         if (!isRemoteEnabled || !remote) {
             return;
         }
+
+        remote.requestCurrentRemoteState(() => {
+            logFn.debug(logMsg[LogCategory.REMOTE].requestCurrentRemoteState, {
+                category: LogCategory.REMOTE,
+                meta: { volume: player.player.volume, repeat: player.player.repeat, shuffle: player.player.shuffle, status: player.player.status },
+            });
+
+            // Send all current player state
+            remote.updateVolume(player.player.volume);
+            remote.updateRepeat(player.player.repeat);
+            remote.updateShuffle(player.player.shuffle !== PlayerShuffle.NONE);
+            remote.updatePlayback(player.player.status);
+
+            const currentSong = player.getCurrentSong();
+            if (currentSong) {
+                remote.updateSong(currentSong);
+            }
+
+            const currentPosition = useTimestampStoreBase.getState().timestamp;
+            if (currentPosition !== undefined && currentPosition !== null && currentPosition > 0) {
+                remote.updatePosition(currentPosition);
+            }
+        });
 
         remote.requestPosition((_e: unknown, data: { position: number }) => {
             logFn.debug(logMsg[LogCategory.REMOTE].requestPositionReceived, {
@@ -127,6 +151,7 @@ export const useRemote = () => {
         );
 
         return () => {
+            ipc?.removeAllListeners('request-current-remote-state');
             ipc?.removeAllListeners('request-position');
             ipc?.removeAllListeners('request-seek');
             ipc?.removeAllListeners('request-volume');
