@@ -17,50 +17,50 @@
     width: 100%;
     max-width: 100%;
     height: auto;
-    padding: 2rem 1rem;
+    padding: 1rem 1rem;
 
     :global(.item-image-placeholder) {
-        width: 175px !important;
-        height: 175px;
+        width: 88px !important;
+        height: 88px;
     }
 
     .image {
-        width: 250px !important;
-        height: 250px;
+        width: 125px !important;
+        height: 125px;
     }
 
     @container (min-width: $mantine-breakpoint-sm) {
         grid-template-areas: 'image info';
         grid-template-rows: auto;
-        grid-template-columns: 225px minmax(0, 1fr);
+        grid-template-columns: 112px minmax(0, 1fr);
         align-items: flex-end;
         justify-items: start;
         height: auto;
-        min-height: 340px;
-        padding: 5rem 2rem 2rem;
+        min-height: 200px;
+        padding: 2.5rem 1.5rem 0.5rem;
 
         .image {
-            width: 225px !important;
-            height: 225px;
+            width: 112px !important;
+            height: 112px;
         }
 
         :global(.item-image-placeholder) {
-            width: 225px !important;
-            height: 225px;
+            width: 112px !important;
+            height: 112px;
         }
     }
 
     @container (min-width: $mantine-breakpoint-lg) {
-        grid-template-columns: 250px minmax(0, 1fr);
+        grid-template-columns: 125px minmax(0, 1fr);
 
         .image {
-            width: 250px !important;
-            height: 250px;
+            width: 125px !important;
+            height: 125px;
         }
 
         :global(.item-image-placeholder) {
-            width: 250px !important;
-            height: 250px;
+            width: 125px !important;
+            height: 125px;
         }
     }
 
@@ -129,7 +129,7 @@
     display: flex;
     flex-direction: column;
     grid-area: info;
-    gap: var(--theme-spacing-sm);
+    gap: var(--theme-spacing-xs);
     align-items: center;
     justify-content: center;
     width: 100%;
@@ -151,9 +151,9 @@
 .title {
     display: flex;
     margin: 0;
-    font-size: clamp(1.75rem, 3dvw, 2.75rem);
+    font-size: clamp(1.25rem, 2dvw, 1.75rem);
     font-weight: 800;
-    line-height: 1.2;
+    line-height: 1.1;
     word-break: keep-all;
     text-wrap: pretty;
 }
@@ -161,7 +161,7 @@
 .library-header-menu {
     display: flex;
     flex-direction: column;
-    gap: var(--theme-spacing-sm);
+    gap: var(--theme-spacing-xs);
     align-items: center;
     justify-content: center;
     width: 100%;
