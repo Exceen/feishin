@@ -179,7 +179,7 @@
     },
     "pnpm": {
         "overrides": {
-            "node-abi": "3.76.0"
+            "node-abi": "^3.80.0"
         },
         "onlyBuiltDependencies": [
             "electron",
