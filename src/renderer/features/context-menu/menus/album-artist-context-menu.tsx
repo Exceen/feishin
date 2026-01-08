@@ -5,6 +5,7 @@ import { DownloadAction } from '/@/renderer/features/context-menu/actions/downlo
 import { GetInfoAction } from '/@/renderer/features/context-menu/actions/get-info-action';
 import { PlayAction } from '/@/renderer/features/context-menu/actions/play-action';
 import { PlayArtistRadioAction } from '/@/renderer/features/context-menu/actions/play-artist-radio-action';
+import { RefreshCoverArtAction } from '/@/renderer/features/context-menu/actions/refresh-cover-art-action';
 import { SetFavoriteAction } from '/@/renderer/features/context-menu/actions/set-favorite-action';
 import { SetRatingAction } from '/@/renderer/features/context-menu/actions/set-rating-action';
 import { ShareAction } from '/@/renderer/features/context-menu/actions/share-action';
@@ -37,6 +38,7 @@ export const AlbumArtistContextMenu = ({ items, type }: AlbumArtistContextMenuPr
             <ContextMenu.Divider />
             <DownloadAction ids={ids} />
             <ShareAction ids={ids} itemType={LibraryItem.ALBUM_ARTIST} />
+            <RefreshCoverArtAction items={items} itemType={LibraryItem.ALBUM_ARTIST} />
             <ContextMenu.Divider />
             <GetInfoAction disabled={items.length === 0} items={items} />
         </ContextMenu.Content>
