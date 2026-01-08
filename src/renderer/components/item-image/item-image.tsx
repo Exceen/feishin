@@ -10,6 +10,7 @@ import {
     useImageRes,
     useSettingsStore,
 } from '/@/renderer/store';
+import { useImageRefreshStore } from '/@/renderer/store/image-refresh.store';
 import { BaseImage, ImageProps } from '/@/shared/components/image/image';
 import { LibraryItem } from '/@/shared/types/domain-types';
 
@@ -80,6 +81,13 @@ export const useItemImageUrl = (args: UseItemImageUrlProps) => {
     const imageRes = useImageRes();
     const sizeByType: number | undefined = type ? imageRes[type] : undefined;
 
+    // Watch refresh key for items to trigger re-render after manual refresh
+    const getRefreshKey = useImageRefreshStore((state) => state.getRefreshKey);
+    const refreshKey =
+        id && (itemType === LibraryItem.PLAYLIST || itemType === LibraryItem.ALBUM_ARTIST)
+            ? getRefreshKey(id)
+            : 0;
+
     return useMemo(() => {
         if (imageUrl) {
             return imageUrl;
@@ -104,7 +112,7 @@ export const useItemImageUrl = (args: UseItemImageUrlProps) => {
                 query: { id, itemType, size: size ?? sizeByType },
             }) || undefined
         );
-    }, [args.serverId, id, imageUrl, itemType, serverId, size, sizeByType, useRemoteUrl]);
+    }, [args.serverId, id, imageUrl, itemType, serverId, size, sizeByType, useRemoteUrl, refreshKey]);
 };
 
 export function getItemImageUrl(args: UseItemImageUrlProps) {
