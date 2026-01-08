@@ -3,7 +3,7 @@ import clsx from 'clsx';
 import styles from './item-row-play-controls.module.css';
 
 import {
-    LONG_PRESS_PLAY_BEHAVIOR,
+    // LONG_PRESS_PLAY_BEHAVIOR,
     PlayTooltip,
 } from '/@/renderer/features/shared/components/play-button-group';
 import { usePlayButtonClick } from '/@/renderer/features/shared/hooks/use-play-button-click';
@@ -17,30 +17,39 @@ interface ItemRowPlayControlsProps {
 }
 
 export const ItemRowPlayControls = ({ className, disabled, onPlay }: ItemRowPlayControlsProps) => {
-    const handlePlayNext = usePlayButtonClick({
-        onClick: () => {
-            onPlay(Play.NEXT);
-        },
-        onLongPress: () => {
-            onPlay(LONG_PRESS_PLAY_BEHAVIOR[Play.NEXT]);
-        },
-    });
+    // const handlePlayNext = usePlayButtonClick({
+    //     onClick: () => {
+    //         onPlay(Play.NEXT);
+    //     },
+    //     onLongPress: () => {
+    //         onPlay(LONG_PRESS_PLAY_BEHAVIOR[Play.NEXT]);
+    //     },
+    // });
 
     const handlePlayNow = usePlayButtonClick({
         onClick: () => {
             onPlay(Play.NOW);
         },
         onLongPress: () => {
-            onPlay(LONG_PRESS_PLAY_BEHAVIOR[Play.NOW]);
+            onPlay(Play.NOW);
         },
     });
 
-    const handlePlayLast = usePlayButtonClick({
+    // const handlePlayLast = usePlayButtonClick({
+    //     onClick: () => {
+    //         onPlay(Play.LAST);
+    //     },
+    //     onLongPress: () => {
+    //         onPlay(LONG_PRESS_PLAY_BEHAVIOR[Play.LAST]);
+    //     },
+    // });
+
+    const handlePlayShuffled = usePlayButtonClick({
         onClick: () => {
-            onPlay(Play.LAST);
+            onPlay(Play.SHUFFLE);
         },
         onLongPress: () => {
-            onPlay(LONG_PRESS_PLAY_BEHAVIOR[Play.LAST]);
+            onPlay(Play.SHUFFLE);
         },
     });
 
@@ -59,29 +68,29 @@ export const ItemRowPlayControls = ({ className, disabled, onPlay }: ItemRowPlay
                     disabled={disabled}
                 />
             </PlayTooltip>
-            <PlayTooltip disabled={disabled} type={Play.NEXT}>
+            {/*<PlayTooltip disabled={disabled} type={Play.NEXT}>*/}
+            {/*    <ActionIcon*/}
+            {/*        icon="mediaPlayNext"*/}
+            {/*        iconProps={{*/}
+            {/*            size: 'md',*/}
+            {/*        }}*/}
+            {/*        size="xs"*/}
+            {/*        variant="subtle"*/}
+            {/*        {...handlePlayNext.handlers}*/}
+            {/*        {...handlePlayNext.props}*/}
+            {/*        disabled={disabled}*/}
+            {/*    />*/}
+            {/*</PlayTooltip>*/}
+            <PlayTooltip disabled={disabled} type={Play.SHUFFLE}>
                 <ActionIcon
-                    icon="mediaPlayNext"
+                    icon="mediaShuffle"
                     iconProps={{
                         size: 'md',
                     }}
                     size="xs"
                     variant="subtle"
-                    {...handlePlayNext.handlers}
-                    {...handlePlayNext.props}
-                    disabled={disabled}
-                />
-            </PlayTooltip>
-            <PlayTooltip disabled={disabled} type={Play.LAST}>
-                <ActionIcon
-                    icon="mediaPlayLast"
-                    iconProps={{
-                        size: 'md',
-                    }}
-                    size="xs"
-                    variant="subtle"
-                    {...handlePlayLast.handlers}
-                    {...handlePlayLast.props}
+                    {...handlePlayShuffled.handlers}
+                    {...handlePlayShuffled.props}
                     disabled={disabled}
                 />
             </PlayTooltip>
