@@ -7,11 +7,14 @@ import { Link, useNavigate } from 'react-router';
 import packageJson from '../../../../../package.json';
 import styles from './app-menu.module.css';
 
+import { PreloadProgressModal } from '/@/renderer/features/preload/components/preload-progress-modal';
+import { usePreloadStore } from '/@/renderer/features/preload/stores/preload-store';
 import { isServerLock } from '/@/renderer/features/action-required/utils/window-properties';
 import { ServerList } from '/@/renderer/features/servers/components/server-list';
 import { openSettingsModal } from '/@/renderer/features/settings/utils/open-settings-modal';
 import { ServerSelector } from '/@/renderer/features/sidebar/components/server-selector';
 import { openReleaseNotesModal } from '/@/renderer/release-notes-modal';
+import { useAppStore, useAppStoreActions, useCommandPalette, useCurrentServer } from '/@/renderer/store';
 import {
     useAppStore,
     useAppStoreActions,
@@ -89,6 +92,8 @@ export const AppMenu = () => {
     const settings = useGeneralSettings();
     const currentServer = useCurrentServer();
     const { open: openCommandPalette } = useCommandPalette();
+    const currentServer = useCurrentServer();
+    const { isLoading: isPreloading, start: startPreload } = usePreloadStore();
 
     const handleBrowserDevTools = () => {
         browser?.devtools();
@@ -122,6 +127,33 @@ export const AppMenu = () => {
         openModal({
             children: <ServerList />,
             title: t('page.manageServers.title', { postProcess: 'titleCase' }),
+        });
+    };
+
+    const handlePreloadCoverArt = () => {
+        if (!currentServer?.id) {
+            toast.error({
+                message: t('error.serverNotSelected', {
+                    defaultValue: 'No server selected',
+                    postProcess: 'sentenceCase',
+                }),
+                title: t('common.error', { defaultValue: 'Error', postProcess: 'sentenceCase' }),
+            });
+            return;
+        }
+
+        // Start preloading if not already running
+        if (!isPreloading) {
+            startPreload(currentServer.id);
+        }
+
+        // Open modal to show progress (can be reopened even if already running)
+        openModal({
+            children: <PreloadProgressModal />,
+            title: t('page.appMenu.preloadCoverArt', {
+                defaultValue: 'Preload all cover art',
+                postProcess: 'sentenceCase',
+            }),
         });
     };
 
@@ -232,6 +264,21 @@ export const AppMenu = () => {
         {
             id: 'divider-3',
             type: 'divider',
+        },
+        {
+            icon: 'download',
+            id: 'preload-cover-art',
+            label: isPreloading
+                ? t('page.appMenu.preloadCoverArtInProgress', {
+                      defaultValue: 'Preload all cover art (in progress...)',
+                      postProcess: 'sentenceCase',
+                  })
+                : t('page.appMenu.preloadCoverArt', {
+                      defaultValue: 'Preload all cover art',
+                      postProcess: 'sentenceCase',
+                  }),
+            onClick: handlePreloadCoverArt,
+            type: 'item',
         },
         {
             icon: 'settings',
