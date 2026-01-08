@@ -471,6 +471,8 @@
             "goBack": "go back",
             "goForward": "go forward",
             "manageServers": "manage servers",
+            "preloadCoverArt": "preload all cover art",
+            "preloadCoverArtInProgress": "preload all cover art (in progress...)",
             "privateModeOff": "turn off private mode",
             "privateModeOn": "turn on private mode",
             "openBrowserDevtools": "open browser devtools",
@@ -628,6 +630,29 @@
             "artistTracks": "tracks by {{artist}}",
             "genreTracks": "\"{{genre}}\" $t(entity.track, {\"count\": 2})",
             "title": "$t(entity.track, {\"count\": 2})"
+        }
+    },
+    "preload": {
+        "coverArt": {
+            "title": "preloading cover art",
+            "status": {
+                "initializing": "initializing...",
+                "loading": "loading...",
+                "completed": "completed",
+                "cancelled": "cancelled",
+                "error": "error occurred"
+            },
+            "albums": "albums",
+            "artists": "artists",
+            "overall": "overall",
+            "loaded": "loaded",
+            "failed": "failed",
+            "elapsed": "elapsed",
+            "cancelButton": "cancel",
+            "closeButton": "close",
+            "completedMessage": "successfully preloaded {{count}} cover art images",
+            "cancelledMessage": "preloading cancelled",
+            "errorMessage": "failed to preload cover art: {{error}}"
         }
     },
     "player": {
