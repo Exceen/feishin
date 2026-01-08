@@ -240,30 +240,39 @@ const RowControls = ({
     id: string;
     onPlay: (id: string, playType: Play) => void;
 }) => {
-    const handlePlayNext = usePlayButtonClick({
-        onClick: () => {
-            onPlay(id, Play.NEXT);
-        },
-        onLongPress: () => {
-            onPlay(id, LONG_PRESS_PLAY_BEHAVIOR[Play.NEXT]);
-        },
-    });
+    // const handlePlayNext = usePlayButtonClick({
+    //     onClick: () => {
+    //         onPlay(id, Play.NEXT);
+    //     },
+    //     onLongPress: () => {
+    //         onPlay(id, LONG_PRESS_PLAY_BEHAVIOR[Play.NEXT]);
+    //     },
+    // });
 
     const handlePlayNow = usePlayButtonClick({
         onClick: () => {
             onPlay(id, Play.NOW);
         },
         onLongPress: () => {
-            onPlay(id, LONG_PRESS_PLAY_BEHAVIOR[Play.NOW]);
+            onPlay(id, Play.NOW);
         },
     });
 
-    const handlePlayLast = usePlayButtonClick({
+    // const handlePlayLast = usePlayButtonClick({
+    //     onClick: () => {
+    //         onPlay(id, Play.LAST);
+    //     },
+    //     onLongPress: () => {
+    //         onPlay(id, LONG_PRESS_PLAY_BEHAVIOR[Play.LAST]);
+    //     },
+    // });
+
+    const handlePlayShuffled = usePlayButtonClick({
         onClick: () => {
-            onPlay(id, Play.LAST);
+            onPlay(id, Play.SHUFFLE);
         },
         onLongPress: () => {
-            onPlay(id, LONG_PRESS_PLAY_BEHAVIOR[Play.LAST]);
+            onPlay(id, Play.SHUFFLE);
         },
     });
 
@@ -281,30 +290,19 @@ const RowControls = ({
                     {...handlePlayNow.props}
                 />
             </PlayTooltip>
-            <PlayTooltip type={Play.NEXT}>
+            <PlayTooltip type={Play.SHUFFLE}>
                 <ActionIcon
-                    icon="mediaPlayNext"
+                    icon="mediaShuffle"
                     iconProps={{
                         size: 'md',
                     }}
                     size="xs"
                     variant="subtle"
-                    {...handlePlayNext.handlers}
-                    {...handlePlayNext.props}
+                    {...handlePlayShuffled.handlers}
+                    {...handlePlayShuffled.props}
                 />
             </PlayTooltip>
-            <PlayTooltip type={Play.LAST}>
-                <ActionIcon
-                    icon="mediaPlayLast"
-                    iconProps={{
-                        size: 'md',
-                    }}
-                    size="xs"
-                    variant="subtle"
-                    {...handlePlayLast.handlers}
-                    {...handlePlayLast.props}
-                />
-            </PlayTooltip>
+
         </ActionIconGroup>
     );
 };
