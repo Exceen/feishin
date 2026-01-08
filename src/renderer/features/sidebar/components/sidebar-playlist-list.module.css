@@ -19,7 +19,7 @@
 .row-hover {
     .metadata,
     .compact-name {
-        margin-right: 100px;
+        margin-right: 75px;
     }
 
     background-color: var(--theme-colors-surface);
