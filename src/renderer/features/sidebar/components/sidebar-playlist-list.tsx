@@ -20,7 +20,12 @@ import {
 import { usePlayButtonClick } from '/@/renderer/features/shared/hooks/use-play-button-click';
 import { useDragDrop } from '/@/renderer/hooks/use-drag-drop';
 import { AppRoute } from '/@/renderer/router/routes';
-import { useCurrentServer, useCurrentServerId, usePermissions } from '/@/renderer/store';
+import {
+    useCurrentServer,
+    useCurrentServerId,
+    usePermissions,
+    useSidebarPlaylistListFilterRegex,
+} from '/@/renderer/store';
 import { formatDurationString } from '/@/renderer/utils';
 import { Accordion } from '/@/shared/components/accordion/accordion';
 import { ActionIcon, ActionIconGroup } from '/@/shared/components/action-icon/action-icon';
@@ -313,6 +318,7 @@ export const SidebarPlaylistList = () => {
     const player = usePlayer();
     const { t } = useTranslation();
     const server = useCurrentServer();
+    const filterRegex = useSidebarPlaylistListFilterRegex();
 
     const playlistsQuery = useQuery(
         playlistsQueries.list({
@@ -351,16 +357,35 @@ export const SidebarPlaylistList = () => {
             return { ...base, items: playlistsQuery.data?.items };
         }
 
+        let regex: null | RegExp = null;
+        if (filterRegex) {
+            try {
+                regex = new RegExp(filterRegex, 'i');
+            } catch {
+                // Invalid regex, ignore filtering
+            }
+        }
+
         const owned: Array<[boolean, () => void] | Playlist> = [];
 
         for (const playlist of playlistsQuery.data?.items ?? []) {
             if (!playlist.owner || playlist.owner === server.username) {
+                // Filter out playlists that match the regex
+                if (regex && regex.test(playlist.name)) {
+                    continue;
+                }
                 owned.push(playlist);
             }
         }
 
         return { ...base, items: owned };
-    }, [playlistsQuery.data?.items, handlePlayPlaylist, server?.type, server.username]);
+    }, [
+        playlistsQuery.data?.items,
+        handlePlayPlaylist,
+        server?.type,
+        server.username,
+        filterRegex,
+    ]);
 
     const handleCreatePlaylistModal = (e: MouseEvent<HTMLButtonElement>) => {
         openCreatePlaylistModal(server, e);
@@ -428,6 +453,7 @@ export const SidebarSharedPlaylistList = () => {
     const player = usePlayer();
     const { t } = useTranslation();
     const server = useCurrentServer();
+    const filterRegex = useSidebarPlaylistListFilterRegex();
 
     const playlistsQuery = useQuery(
         playlistsQueries.list({
@@ -470,16 +496,35 @@ export const SidebarSharedPlaylistList = () => {
             return { ...base, items: playlistsQuery.data?.items };
         }
 
+        let regex: null | RegExp = null;
+        if (filterRegex) {
+            try {
+                regex = new RegExp(filterRegex, 'i');
+            } catch {
+                // Invalid regex, ignore filtering
+            }
+        }
+
         const shared: Playlist[] = [];
 
         for (const playlist of playlistsQuery.data?.items ?? []) {
             if (playlist.owner && playlist.owner !== server.username) {
+                // Filter out playlists that match the regex
+                if (regex && regex.test(playlist.name)) {
+                    continue;
+                }
                 shared.push(playlist);
             }
         }
 
         return { ...base, items: shared };
-    }, [handlePlayPlaylist, playlistsQuery.data?.items, server?.type, server.username]);
+    }, [
+        handlePlayPlaylist,
+        playlistsQuery.data?.items,
+        server?.type,
+        server.username,
+        filterRegex,
+    ]);
 
     if (memoizedItemData?.items?.length === 0) {
         return null;
