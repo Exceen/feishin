@@ -12,7 +12,6 @@ import {
     useRadioPlayer,
 } from '/@/renderer/features/radio/hooks/use-radio-player';
 import { ActionBar } from '/@/renderer/features/sidebar/components/action-bar';
-import { ServerSelector } from '/@/renderer/features/sidebar/components/server-selector';
 import { SidebarCollectionList } from '/@/renderer/features/sidebar/components/sidebar-collection-list';
 import { SidebarIcon } from '/@/renderer/features/sidebar/components/sidebar-icon';
 import { SidebarItem } from '/@/renderer/features/sidebar/components/sidebar-item';
@@ -130,16 +129,18 @@ export const Sidebar = () => {
                             </Text>
                         </Accordion.Control>
                         <Accordion.Panel>
-                            {libraryItemsWithRoute.map((item) => {
-                                return (
-                                    <SidebarItem key={`sidebar-${item.route}`} to={item.route}>
-                                        <Group gap="md">
-                                            <SidebarIcon route={item.route} />
-                                            {item.label}
-                                        </Group>
-                                    </SidebarItem>
-                                );
-                            })}
+                            {libraryItemsWithRoute
+                                .filter((item) => item.label !== 'Playlists')
+                                .map((item) => {
+                                    return (
+                                        <SidebarItem key={`sidebar-${item.route}`} to={item.route}>
+                                            <Group gap="md">
+                                                <SidebarIcon route={item.route} />
+                                                {item.label}
+                                            </Group>
+                                        </SidebarItem>
+                                    );
+                                })}
                         </Accordion.Panel>
                     </Accordion.Item>
                     <SidebarCollectionList />
@@ -152,9 +153,9 @@ export const Sidebar = () => {
                 </Accordion>
             </ScrollArea>
             <AnimatePresence initial={false} mode="popLayout">
-                <motion.div className={styles.serverSelectorWrapper} key="server-selector" layout>
-                    <ServerSelector />
-                </motion.div>
+                {/*    <motion.div className={styles.serverSelectorWrapper} key="server-selector" layout>*/}
+                {/*        <ServerSelector />*/}
+                {/*    </motion.div>*/}
                 {showImage && <SidebarImage />}
             </AnimatePresence>
         </div>
