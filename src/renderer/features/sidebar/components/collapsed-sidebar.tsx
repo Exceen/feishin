@@ -174,38 +174,38 @@ export const CollapsedSidebar = () => {
                         />
                     ),
                 )}
-                {currentServer && (
-                    <DropdownMenu offset={0} position="right-end" width={240}>
-                        <DropdownMenu.Target>
-                            <CollapsedSidebarItem
-                                activeIcon={null}
-                                component={Flex}
-                                icon={
-                                    <img
-                                        className={styles.serverIcon}
-                                        src={
-                                            currentServer.type === ServerType.NAVIDROME
-                                                ? NavidromeLogo
-                                                : currentServer.type === ServerType.JELLYFIN
-                                                  ? JellyfinLogo
-                                                  : OpenSubsonicLogo
-                                        }
-                                    />
-                                }
-                                label={''}
-                                py="md"
-                                style={{
-                                    cursor: 'pointer',
-                                }}
-                            />
-                        </DropdownMenu.Target>
-                        <DropdownMenu.Dropdown>
-                            <ScrollArea style={{ maxHeight: '95vh' }}>
-                                <ServerSelectorItems />
-                            </ScrollArea>
-                        </DropdownMenu.Dropdown>
-                    </DropdownMenu>
-                )}
+                {/*{currentServer && (*/}
+                {/*    <DropdownMenu offset={0} position="right-end" width={240}>*/}
+                {/*        <DropdownMenu.Target>*/}
+                {/*            <CollapsedSidebarItem*/}
+                {/*                activeIcon={null}*/}
+                {/*                component={Flex}*/}
+                {/*                icon={*/}
+                {/*                    <img*/}
+                {/*                        className={styles.serverIcon}*/}
+                {/*                        src={*/}
+                {/*                            currentServer.type === ServerType.NAVIDROME*/}
+                {/*                                ? NavidromeLogo*/}
+                {/*                                : currentServer.type === ServerType.JELLYFIN*/}
+                {/*                                  ? JellyfinLogo*/}
+                {/*                                  : OpenSubsonicLogo*/}
+                {/*                        }*/}
+                {/*                    />*/}
+                {/*                }*/}
+                {/*                label={''}*/}
+                {/*                py="md"*/}
+                {/*                style={{*/}
+                {/*                    cursor: 'pointer',*/}
+                {/*                }}*/}
+                {/*            />*/}
+                {/*        </DropdownMenu.Target>*/}
+                {/*        <DropdownMenu.Dropdown>*/}
+                {/*            <ScrollArea style={{ maxHeight: '95vh' }}>*/}
+                {/*                <ServerSelectorItems />*/}
+                {/*            </ScrollArea>*/}
+                {/*        </DropdownMenu.Dropdown>*/}
+                {/*    </DropdownMenu>*/}
+                {/*)}*/}
             </ScrollArea>
         </motion.div>
     );
