@@ -237,6 +237,13 @@ const normalizeSong = (
         id = item.id;
     }
 
+    // For Spotify Various Artists albums, use the song's own ID for cover art to get individual covers
+    // Otherwise, use the album ID to share cover art across all songs
+    const imageId =
+        item.albumArtist === 'Various Artists' && item.album.startsWith('Spotify:')
+            ? id // item.id might be better here
+            : item.albumId;
+
     return {
         album: item.album,
         albumId: item.albumId,
@@ -279,7 +286,7 @@ const normalizeSong = (
             songCount: null,
         })),
         id,
-        imageId: id,
+        imageId,
         imageUrl: null,
         lastPlayedAt: normalizePlayDate(item),
         lyrics: item.lyrics ? item.lyrics : null,
@@ -358,6 +365,17 @@ const normalizeAlbum = (
     pathReplace?: string,
     pathReplaceWith?: string,
 ): Album => {
+    // Calculate the latest updatedAt from all songs if they exist
+    let albumUpdatedAt = item.updatedAt;
+    if (item.songs && item.songs.length > 0) {
+        const latestSong = item.songs.reduce((latest, song) =>
+            new Date(song.updatedAt) > new Date(latest.updatedAt) ? song : latest,
+        );
+        if (new Date(latestSong.updatedAt) > new Date(albumUpdatedAt)) {
+            albumUpdatedAt = latestSong.updatedAt;
+        }
+    }
+
     const releaseDate = normalizeReleaseDate(item);
     const originalDate = normalizeOriginalDate(item);
 
@@ -409,7 +427,7 @@ const normalizeAlbum = (
             : undefined,
         sortName: item.orderAlbumName,
         tags: item.tags || null,
-        updatedAt: item.updatedAt,
+        updatedAt: albumUpdatedAt,
         userFavorite: item.starred || false,
         userRating: item.rating || null,
     };
