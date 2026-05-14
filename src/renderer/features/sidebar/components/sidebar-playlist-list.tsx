@@ -5,13 +5,6 @@ import { memo, MouseEvent, useCallback, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { generatePath, Link } from 'react-router';
 
-import {
-    collectFolderPaths,
-    PlaylistFolderViews,
-    usePlaylistFolderState,
-    usePlaylistFolderViewState,
-    usePlaylistNavigationState,
-} from './playlist-folder-tree';
 import styles from './sidebar-playlist-list.module.css';
 
 import { useItemImageUrl } from '/@/renderer/components/item-image/item-image';
@@ -24,6 +17,14 @@ import {
     PlayTooltip,
 } from '/@/renderer/features/shared/components/play-button-group';
 import { usePlayButtonClick } from '/@/renderer/features/shared/hooks/use-play-button-click';
+import {
+    collectFolderPaths,
+    PlaylistFolderViews,
+    PlaylistRootAccordionControl,
+    usePlaylistFolderState,
+    usePlaylistFolderViewState,
+    usePlaylistNavigationState,
+} from '/@/renderer/features/sidebar/components/playlist-folder-tree';
 import { useDragDrop } from '/@/renderer/hooks/use-drag-drop';
 import { AppRoute } from '/@/renderer/router/routes';
 import {
@@ -553,8 +554,8 @@ export const SidebarPlaylistList = () => {
 
     return (
         <Accordion.Item value="playlists">
-            <Accordion.Control component="div" role="button" style={{ userSelect: 'none' }}>
-                <Group justify="space-between" pr="var(--theme-spacing-md)">
+            <PlaylistRootAccordionControl allPlaylists={playlistItems?.items ?? []}>
+                <Group gap="xs" justify="space-between" pr="var(--theme-spacing-md)" wrap="nowrap">
                     <Group gap="xs" style={{ minWidth: 0 }} wrap="nowrap">
                         {inNavigation && (
                             <ActionIcon
@@ -620,10 +621,11 @@ export const SidebarPlaylistList = () => {
                         />
                     </Group>
                 </Group>
-            </Accordion.Control>
+            </PlaylistRootAccordionControl>
             <Accordion.Panel>
                 <PlaylistFolderViews
                     {...folderViewState}
+                    allPlaylists={playlistItems?.items ?? []}
                     expandedSet={expandedSet}
                     navigation={navigation}
                     onContextMenu={handleContextMenu}
@@ -787,7 +789,7 @@ export const SidebarSharedPlaylistList = () => {
 
     return (
         <Accordion.Item value="shared-playlists">
-            <Accordion.Control component="div" role="button" style={{ userSelect: 'none' }}>
+            <Accordion.Control component="motion.div" role="button" style={{ userSelect: 'none' }}>
                 <Group gap="xs" style={{ minWidth: 0 }} wrap="nowrap">
                     {inNavigation && (
                         <ActionIcon
@@ -807,6 +809,7 @@ export const SidebarSharedPlaylistList = () => {
             <Accordion.Panel>
                 <PlaylistFolderViews
                     {...folderViewState}
+                    allPlaylists={playlistItems?.items ?? []}
                     expandedSet={expandedSet}
                     navigation={navigation}
                     onContextMenu={handleContextMenu}

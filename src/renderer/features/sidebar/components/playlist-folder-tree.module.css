@@ -3,6 +3,20 @@
     flex-direction: column;
 }
 
+.header-dragged-over {
+    position: relative;
+
+    &::after {
+        position: absolute;
+        inset: 0;
+        pointer-events: none;
+        content: "";
+        border: 2px solid var(--theme-colors-primary);
+        border-radius: var(--theme-radius-md);
+        opacity: 0.8;
+    }
+}
+
 .header {
     display: flex;
     gap: var(--theme-spacing-md);
@@ -109,4 +123,18 @@
 .nav-chevron {
     flex-shrink: 0;
     opacity: 0.6;
+}
+
+.root-drop-target-dragged-over {
+    position: relative;
+
+    &::after {
+        position: absolute;
+        inset: 0;
+        pointer-events: none;
+        content: "";
+        border: 2px solid var(--theme-colors-primary);
+        border-radius: var(--theme-radius-md);
+        opacity: 0.8;
+    }
 }
