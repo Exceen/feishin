@@ -799,7 +799,8 @@
         "playerbarWaveformStretch": "波形拉伸",
         "playerbarWaveformStretch_description": "拉伸波形來填補可用空間",
         "preventSuspendOnPlayback_description": "音樂播放時防止應用程式進入休眠",
-        "preventSuspendOnPlayback": "在播放時防止應用程式暫停"
+        "preventSuspendOnPlayback": "在播放時防止應用程式暫停",
+        "hotkey_listShowPlayingSong": "在清單中顯示正在播放的歌曲"
     },
     "table": {
         "config": {
@@ -952,7 +953,9 @@
         "addOrRemoveFromSelection": "新增或移除選取項目",
         "selectAll": "全選",
         "selectRangeOfItems": "批量選取",
-        "goToCurrent": "前往當前項目"
+        "goToCurrent": "前往當前項目",
+        "expandAllFolders": "展開所有資料夾",
+        "collapseAllFolders": "摺疊所有資料夾"
     },
     "entity": {
         "album_other": "專輯",
