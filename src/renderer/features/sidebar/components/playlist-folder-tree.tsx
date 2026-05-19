@@ -1,9 +1,11 @@
 import clsx from 'clsx';
+import { motion } from 'motion/react';
 import {
     ComponentPropsWithoutRef,
     CSSProperties,
     MouseEvent,
     ReactElement,
+    ReactNode,
     useCallback,
     useMemo,
     useState,
@@ -32,6 +34,25 @@ import { LibraryItem, Playlist } from '/@/shared/types/domain-types';
 import { DragData, DragOperation, DragTarget } from '/@/shared/types/drag-and-drop';
 
 const STORAGE_KEY_PREFIX = 'feishin:playlist-folder-state';
+
+const FOLDER_COLLAPSE_TRANSITION = { duration: 0.2, ease: 'easeInOut' } as const;
+
+interface PlaylistFolderCollapseProps {
+    children: ReactNode;
+    className?: string;
+    open: boolean;
+}
+
+const PlaylistFolderCollapse = ({ children, className, open }: PlaylistFolderCollapseProps) => (
+    <motion.div
+        animate={{ height: open ? 'auto' : 0, opacity: open ? 1 : 0 }}
+        className={clsx(styles.collapse, className)}
+        initial={false}
+        transition={FOLDER_COLLAPSE_TRANSITION}
+    >
+        {children}
+    </motion.div>
+);
 
 export const getPlaylistLeafName = (name: string, separator: string): string => {
     if (!separator) return name;
@@ -457,7 +478,7 @@ const PlaylistFolderHeader = ({
                 type="button"
             >
                 <div className={styles.navFolderIcon}>
-                    <Icon color="muted" icon="folder" size="xl" />
+                    <Icon color="muted" icon={isOpen ? 'folder' : 'folderClosed'} size="md" />
                 </div>
                 <Text className={styles.name} fw={500} size="md">
                     {name}
@@ -482,18 +503,21 @@ const PlaylistFolderHeader = ({
             style={{ opacity: isDragging ? 0.5 : 1 }}
             type="button"
         >
-            <Icon
-                className={styles.chevron}
-                icon={isOpen ? 'arrowDownS' : 'arrowRightS'}
-                size="sm"
-            />
-            <Icon color="muted" icon="folder" size="sm" />
+            <Icon color="muted" icon={isOpen ? 'folder' : 'folderClosed'} size="md" />
             <Text className={styles.name} fw={500} size="md">
                 {name}
             </Text>
             <Text className={styles.count} isMuted size="sm">
                 {leafCount}
             </Text>
+            <motion.span
+                animate={{ rotate: isOpen ? 180 : 0 }}
+                className={styles.chevron}
+                initial={false}
+                transition={FOLDER_COLLAPSE_TRANSITION}
+            >
+                <Icon icon="arrowUpS" size="md" />
+            </motion.span>
         </button>
     );
 };
@@ -724,20 +748,18 @@ export const PlaylistFolderTree = ({
                             onClick={() => onToggleFolder(group.name)}
                             variant="header"
                         />
-                        {isOpen && (
-                            <div className={styles.children}>
-                                {group.items.map((item) => (
-                                    <PlaylistRowButton
-                                        item={item}
-                                        key={item.id}
-                                        name={item.name.slice(group.name.length + 1)}
-                                        onContextMenu={onContextMenu}
-                                        onReorder={onReorder}
-                                        to={item.id}
-                                    />
-                                ))}
-                            </div>
-                        )}
+                        <PlaylistFolderCollapse className={styles.children} open={isOpen}>
+                            {group.items.map((item) => (
+                                <PlaylistRowButton
+                                    item={item}
+                                    key={item.id}
+                                    name={item.name.slice(group.name.length + 1)}
+                                    onContextMenu={onContextMenu}
+                                    onReorder={onReorder}
+                                    to={item.id}
+                                />
+                            ))}
+                        </PlaylistFolderCollapse>
                     </div>
                 );
             })}
@@ -788,15 +810,13 @@ export const PlaylistFolderTreeView = ({
                     onClick={() => onToggleFolder(node.path)}
                     variant="header"
                 />
-                {isOpen && (
-                    <div className={styles.treeChildren}>
-                        {node.children.map((child) => (
-                            <div className={styles.treeBranch} key={getNodeKey(child)}>
-                                {renderNode(child)}
-                            </div>
-                        ))}
-                    </div>
-                )}
+                <PlaylistFolderCollapse className={styles.treeChildren} open={isOpen}>
+                    {node.children.map((child) => (
+                        <div className={styles.treeBranch} key={getNodeKey(child)}>
+                            {renderNode(child)}
+                        </div>
+                    ))}
+                </PlaylistFolderCollapse>
             </div>
         );
     };

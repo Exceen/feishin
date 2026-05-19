@@ -571,7 +571,7 @@ export const SidebarPlaylistList = () => {
                             {inNavigation ? navigation.currentName : t('page.sidebar.playlists')}
                         </Text>
                     </Group>
-                    <Group gap="xs">
+                    <Group gap="xs" wrap="nowrap">
                         <ActionIcon
                             icon="add"
                             iconProps={{
