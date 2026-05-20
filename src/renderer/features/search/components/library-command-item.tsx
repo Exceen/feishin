@@ -1,5 +1,3 @@
-import type { MouseEvent } from 'react';
-
 import { openContextModal } from '@mantine/modals';
 import { CSSProperties, useCallback, useState } from 'react';
 import { useTranslation } from 'react-i18next';
