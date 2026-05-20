@@ -14,11 +14,7 @@ import { usePlayer } from '/@/renderer/features/player/context/player-context';
 import { playlistsQueries } from '/@/renderer/features/playlists/api/playlists-api';
 import { openCreatePlaylistModal } from '/@/renderer/features/playlists/components/create-playlist-form';
 import { useIsMutatingSidebarPlaylistFolderMove } from '/@/renderer/features/playlists/mutations/sidebar-playlist-folder-move-mutation';
-import {
-    LONG_PRESS_PLAY_BEHAVIOR,
-    PlayTooltip,
-} from '/@/renderer/features/shared/components/play-button-group';
-import { usePlayButtonClick } from '/@/renderer/features/shared/hooks/use-play-button-click';
+import { ItemRowPlayControls } from '/@/renderer/features/shared/components/item-row-play-controls';
 import {
     collectFolderPaths,
     PlaylistFolderDragExpandProvider,
@@ -41,7 +37,7 @@ import {
 } from '/@/renderer/store';
 import { formatDurationString } from '/@/renderer/utils';
 import { Accordion } from '/@/shared/components/accordion/accordion';
-import { ActionIcon, ActionIconGroup } from '/@/shared/components/action-icon/action-icon';
+import { ActionIcon } from '/@/shared/components/action-icon/action-icon';
 import { animationProps } from '/@/shared/components/animations/animation-props';
 import { animationVariants } from '/@/shared/components/animations/animation-variants';
 import { ButtonProps } from '/@/shared/components/button/button';
@@ -299,7 +295,12 @@ export const PlaylistRowButton = memo(
                         <Text className={styles.compactName} fw={500} size="md">
                             {name}
                         </Text>
-                        {isHovered && <RowControls id={to} onPlay={handlePlay} variant="compact" />}
+                        {isHovered && (
+                            <ItemRowPlayControls
+                                className={clsx(styles.controls, styles.controlsCompact)}
+                                onPlay={(playType) => handlePlay(to, playType)}
+                            />
+                        )}
                     </>
                 ) : (
                     <>
@@ -347,95 +348,18 @@ export const PlaylistRowButton = memo(
                             </div>
                         </div>
 
-                        {isHovered && <RowControls id={to} onPlay={handlePlay} />}
+                        {isHovered && (
+                            <ItemRowPlayControls
+                                className={styles.controls}
+                                onPlay={(playType) => handlePlay(to, playType)}
+                            />
+                        )}
                     </>
                 )}
             </MotionLink>
         );
     },
 );
-
-const RowControls = ({
-    id,
-    onPlay,
-    variant = 'expanded',
-}: {
-    id: string;
-    onPlay: (id: string, playType: Play) => void;
-    variant?: 'compact' | 'expanded';
-}) => {
-    const handlePlayNext = usePlayButtonClick({
-        onClick: () => {
-            onPlay(id, Play.NEXT);
-        },
-        onLongPress: () => {
-            onPlay(id, LONG_PRESS_PLAY_BEHAVIOR[Play.NEXT]);
-        },
-    });
-
-    const handlePlayNow = usePlayButtonClick({
-        onClick: () => {
-            onPlay(id, Play.NOW);
-        },
-        onLongPress: () => {
-            onPlay(id, LONG_PRESS_PLAY_BEHAVIOR[Play.NOW]);
-        },
-    });
-
-    const handlePlayLast = usePlayButtonClick({
-        onClick: () => {
-            onPlay(id, Play.LAST);
-        },
-        onLongPress: () => {
-            onPlay(id, LONG_PRESS_PLAY_BEHAVIOR[Play.LAST]);
-        },
-    });
-
-    return (
-        <ActionIconGroup
-            className={clsx(styles.controls, {
-                [styles.controlsCompact]: variant === 'compact',
-            })}
-        >
-            <PlayTooltip type={Play.NOW}>
-                <ActionIcon
-                    icon="mediaPlay"
-                    iconProps={{
-                        size: 'md',
-                    }}
-                    size="xs"
-                    variant="subtle"
-                    {...handlePlayNow.handlers}
-                    {...handlePlayNow.props}
-                />
-            </PlayTooltip>
-            <PlayTooltip type={Play.NEXT}>
-                <ActionIcon
-                    icon="mediaPlayNext"
-                    iconProps={{
-                        size: 'md',
-                    }}
-                    size="xs"
-                    variant="subtle"
-                    {...handlePlayNext.handlers}
-                    {...handlePlayNext.props}
-                />
-            </PlayTooltip>
-            <PlayTooltip type={Play.LAST}>
-                <ActionIcon
-                    icon="mediaPlayLast"
-                    iconProps={{
-                        size: 'md',
-                    }}
-                    size="xs"
-                    variant="subtle"
-                    {...handlePlayLast.handlers}
-                    {...handlePlayLast.props}
-                />
-            </PlayTooltip>
-        </ActionIconGroup>
-    );
-};
 
 export const SidebarPlaylistList = () => {
     const player = usePlayer();
