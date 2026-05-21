@@ -30,7 +30,9 @@ import packageJson from '../../package.json';
 import { disableMediaKeys, enableMediaKeys } from './features/core/player/media-keys';
 import { shutdownServer } from './features/core/remote';
 import { store } from './features/core/settings';
+import { canHandleVisualizerDisplayMedia } from './features/core/visualizer';
 import MenuBuilder, { MenuPlaybackState } from './menu';
+import './features';
 import {
     autoUpdaterLogInterface,
     createLog,
@@ -40,7 +42,6 @@ import {
     isMacOS,
     isWindows,
 } from './utils';
-import './features';
 
 import { PlayerRepeat, PlayerStatus, PlayerType, TitleTheme } from '/@/shared/types/types';
 
@@ -734,6 +735,11 @@ async function createWindow(first = true): Promise<void> {
     });
 
     mainWindow.webContents.session.setDisplayMediaRequestHandler((_request, callback) => {
+        if (!canHandleVisualizerDisplayMedia()) {
+            callback({});
+            return;
+        }
+
         if (!isMacOS()) {
             callback({ audio: 'loopback' });
             return;
