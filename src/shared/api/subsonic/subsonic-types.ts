@@ -795,10 +795,10 @@ const getInternetRadioStations = z.object({
 });
 
 const reportPlaybackParameters = z.object({
-    ignoreScrobble: z.boolean(),
+    ignoreScrobble: z.boolean().optional(),
     mediaId: z.string(),
     mediaType: z.enum(['song', 'podcast']),
-    playbackRate: z.number(),
+    playbackRate: z.number().optional(),
     positionMs: z.number(),
     state: z.enum(['starting', 'playing', 'paused', 'stopped']),
 });
