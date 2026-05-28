@@ -28,6 +28,21 @@ async function fetchImageToBase64(url: string): Promise<string> {
     return `data:${contentType};base64,${btoa(binary)}`;
 }
 
+// Drop any resize hints so the server returns the original artwork.
+// Jellyfin uses `width`/`height`, Subsonic/Navidrome use `size`.
+function toFullResUrl(url: string): string {
+    if (!url || /^data:/.test(url)) return url;
+    try {
+        const u = new URL(url);
+        u.searchParams.delete('size');
+        u.searchParams.delete('width');
+        u.searchParams.delete('height');
+        return u.toString();
+    } catch {
+        return url;
+    }
+}
+
 const mediaService = new MediaService();
 const metadataEmpty: Metadata = {
     album: '',
@@ -76,44 +91,47 @@ ipcMain.on('update-playback', (_event, status: PlayerStatus) => {
     mediaService.setMetaData(metadataCur);
 });
 
-ipcMain.on('update-song', async (_event, song: QueueSong | undefined) => {
-    try {
-        console.error(song);
-        if (!song?.id) {
-            metadataCur = structuredClone(metadataEmpty);
-            mediaService.setMetaData(metadataCur);
-            return;
-        }
-
-        let artUrl = song.imageUrl ?? '';
-
-        if (song.imageUrl !== metadataCur.albumArtUrl) {
-            if (song.imageUrl && !/^data:.*;base64,/.test(artUrl)) {
-                try {
-                    artUrl = await fetchImageToBase64(song.imageUrl);
-                } catch (err) {
-                    console.log('Failed to fetch album art via url', err);
-                }
+ipcMain.on(
+    'update-song',
+    async (_event, song: QueueSong | undefined, imageUrl?: null | string) => {
+        try {
+            if (!song?.id) {
+                metadataCur = structuredClone(metadataEmpty);
+                mediaService.setMetaData(metadataCur);
+                return;
             }
-        } else {
-            artUrl = metadataCur.albumArt; // maintain same encoded art
-        }
 
-        metadataCur = {
-            album: song.album ?? '',
-            albumArt: artUrl,
-            albumArtUrl: song.imageUrl ?? '',
-            artist: song.artists?.length ? song.artists.map((a) => a.name).join(', ') : '',
-            currentTime: metadataCur.currentTime,
-            duration: song.duration ? Math.round(song.duration) : 0,
-            id: 1,
-            state: metadataCur.state,
-            title: song.name ?? '',
-        };
-        mediaService.setMetaData(metadataCur);
-    } catch (err) {
-        console.log(err);
-    }
-});
+            const sourceUrl = toFullResUrl(imageUrl ?? song.imageUrl ?? '');
+            let artUrl = sourceUrl;
+
+            if (sourceUrl !== metadataCur.albumArtUrl) {
+                if (sourceUrl && !/^data:.*;base64,/.test(sourceUrl)) {
+                    try {
+                        artUrl = await fetchImageToBase64(sourceUrl);
+                    } catch (err) {
+                        console.log('Failed to fetch album art via url', err);
+                    }
+                }
+            } else {
+                artUrl = metadataCur.albumArt; // maintain same encoded art
+            }
+
+            metadataCur = {
+                album: song.album ?? '',
+                albumArt: artUrl,
+                albumArtUrl: sourceUrl,
+                artist: song.artists?.length ? song.artists.map((a) => a.name).join(', ') : '',
+                currentTime: metadataCur.currentTime,
+                duration: song.duration ? Math.round(song.duration) : 0,
+                id: 1,
+                state: metadataCur.state,
+                title: song.name ?? '',
+            };
+            mediaService.setMetaData(metadataCur);
+        } catch (err) {
+            console.log(err);
+        }
+    },
+);
 
 export { mediaService };
