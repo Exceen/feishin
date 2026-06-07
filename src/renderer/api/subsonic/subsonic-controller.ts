@@ -2309,7 +2309,7 @@ export const SubsonicController: InternalControllerEndpoint = {
         const { apiClientProps, query } = args;
 
         if (hasFeature(apiClientProps.server, ServerFeature.REPORT_PLAYBACK)) {
-            if (query.submission) {
+            if (query.submission || query.event === 'start') {
                 const res = await ssApiClient(apiClientProps).scrobble({
                     query: {
                         id: query.id,
@@ -2321,7 +2321,9 @@ export const SubsonicController: InternalControllerEndpoint = {
                     throw new Error('Failed to scrobble');
                 }
 
-                return null;
+                if (query.submission) {
+                    return null;
+                }
             }
 
             let state: 'paused' | 'playing' | 'starting' | 'stopped' = 'playing';
