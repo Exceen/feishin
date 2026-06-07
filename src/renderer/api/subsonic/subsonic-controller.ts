@@ -2326,35 +2326,49 @@ export const SubsonicController: InternalControllerEndpoint = {
                 }
             }
 
-            let state: 'paused' | 'playing' | 'starting' | 'stopped' = 'playing';
+            const defaultParams = {
+                ignoreScrobble: true,
+                mediaId: query.id,
+                mediaType: query.mediaType,
+                playbackRate: query.playbackRate,
+                positionMs: query.position ?? 0,
+            };
+
+            const reportPlayback = (state: 'paused' | 'playing' | 'starting' | 'stopped') => {
+                return ssApiClient(apiClientProps).reportPlayback({
+                    query: {
+                        ...defaultParams,
+                        state,
+                    },
+                });
+            };
+
+            const promises: Promise<any>[] = [];
 
             switch (query.event) {
                 case 'pause':
-                    state = 'paused';
+                    promises.push(reportPlayback('paused'));
                     break;
                 case 'start':
-                    state = 'starting';
+                    promises.push(reportPlayback('starting'));
+                    promises.push(reportPlayback('playing'));
+                    break;
+                case 'stop':
+                    promises.push(reportPlayback('stopped'));
                     break;
                 case 'unpause':
-                    state = 'playing';
+                    promises.push(reportPlayback('playing'));
                     break;
                 default:
-                    state = 'playing';
+                    break;
             }
 
-            const res = await ssApiClient(apiClientProps).reportPlayback({
-                query: {
-                    ignoreScrobble: true,
-                    mediaId: query.id,
-                    mediaType: query.mediaType,
-                    playbackRate: query.playbackRate,
-                    positionMs: query.position ?? 0,
-                    state,
-                },
-            });
+            for (const promise of promises) {
+                const res = await promise;
 
-            if (res.status !== 200) {
-                throw new Error('Failed to report playback');
+                if (res.status !== 200) {
+                    throw new Error('Failed to report playback');
+                }
             }
 
             return null;
