@@ -174,7 +174,7 @@
     },
     "entity": {
         "album_one": "Album",
-        "album_other": "Albumit",
+        "album_other": "Albumid",
         "albumArtist_one": "Albumi esitaja",
         "albumArtist_other": "Albumi esitajad",
         "albumArtistCount_one": "{{count}} albumi esitaja",
